@@ -54,6 +54,7 @@ CREATE TABLE
 -- - Numeric columns (monthlycharges and totalcharges) in the CSV file include commas (','),
 --   which prevents direct conversion to NUMERIC types during table creation (customer_churn).
 
+
 /* --------------------------------------------------------------------------------
    1.2. Import data from csv files into customer_churn table
    -------------------------------------------------------------------------------- */
@@ -77,7 +78,8 @@ Below are the SQL queries and results for each Cleaning step.
 /* ================================================================================
    STEP 2: DATA CLEANING
    ================================================================================ */
-   
+
+
 /* --------------------------------------------------------------------------------
     2.1 Null Handling for customer_churn
    -------------------------------------------------------------------------------- */
@@ -107,12 +109,14 @@ SELECT
 	COUNT(*) FILTER(WHERE numtechtickets IS NULL) AS numtechtickets_nulls,
 	COUNT(*) FILTER(WHERE churn IS NULL) AS churn_nulls
 FROM 
-	customer_churn;
+	customer_churn
+;
 
 -- Nul and Empty Value Observation:
 -- - No actual NULL values are found.
 -- - However, many cells in the totalcharges column are empty but contain a space (' ').
 -- *Plan:* Replace these spaces with 0 during Data Transformation.
+
 
 /* --------------------------------------------------------------------------------
     2.2 Duplicate Check for customer_churn
@@ -127,7 +131,8 @@ GROUP BY
 HAVING 
 	COUNT(customerid) > 1
 ORDER BY 
-	customerid;
+	customerid
+;
 
 -- No duplicate records found based on customerid.
 ```
@@ -142,6 +147,7 @@ Below are the SQL queries and results for each transformation step.
    STEP 3: DATA TRANSFORMATION
    ================================================================================ */
 
+
 /* --------------------------------------------------------------------------------
    3.1. Update 'totalcharges' Column Values
    -------------------------------------------------------------------------------- */
@@ -152,10 +158,10 @@ UPDATE
 	customer_churn
 SET
 	totalcharges = 
-	CASE 
+		CASE 
 		WHEN totalcharges = ' ' THEN '0'
 		ELSE totalcharges
-	END
+		END
 ;
 
 
@@ -201,67 +207,220 @@ UPDATE
 SET
 	phoneservice = 
 		CASE 
-      WHEN phoneservice = 'Yes' 
-      THEN 'Phone Service' 
-      ELSE phoneservice 
+      		WHEN phoneservice = 'Yes' 
+		THEN 'Phone Service' 
+      		ELSE phoneservice 
 		END,
 
 	multiplelines = 
 		CASE 
-			WHEN multiplelines = 'Yes' 
-			THEN 'Multiple Lines' 
-			ELSE multiplelines 
+		WHEN multiplelines = 'Yes' 
+		THEN 'Multiple Lines' 
+		ELSE multiplelines 
 		END,
 
 	internetservice = 
 		CASE 
-			WHEN internetservice = 'DSL' 
-			THEN 'Internet Service - DSL' 
-			WHEN internetservice = 'Fiber optic' 
-			THEN 'Internet Service - Fiber Optic'
-			ELSE internetservice
+		WHEN internetservice = 'DSL' 
+		THEN 'Internet Service - DSL' 
+		WHEN internetservice = 'Fiber optic' 
+		THEN 'Internet Service - Fiber Optic'
+		ELSE internetservice
 		END,
 
 	onlinesecurity =
 		CASE
-			WHEN onlinesecurity = 'Yes'
-			THEN 'Online Security'
-			ELSE onlinesecurity
+		WHEN onlinesecurity = 'Yes'
+		THEN 'Online Security'
+		ELSE onlinesecurity
 		END,
 
 	onlinebackup =
 		CASE 
-			WHEN onlinebackup = 'Yes'
-			THEN 'Online Backup'
-			ELSE onlinebackup
+		WHEN onlinebackup = 'Yes'
+		THEN 'Online Backup'
+		ELSE onlinebackup
 		END,
 
 	deviceprotection =
 		CASE
-			WHEN deviceprotection = 'Yes'
-			THEN 'Device Protection'
-			ELSE deviceprotection
+		WHEN deviceprotection = 'Yes'
+		THEN 'Device Protection'
+		ELSE deviceprotection
 		END,
 
 	techsupport =
 		CASE
-			WHEN techsupport = 'Yes'
-			THEN 'Tech Support'
-			ELSE techsupport
+		WHEN techsupport = 'Yes'
+		THEN 'Tech Support'
+		ELSE techsupport
 		END,
 
 	streamingtv =
 		CASE 
-			WHEN streamingtv = 'Yes'
-			THEN 'Streaming TV'
-			ELSE streamingtv
+		WHEN streamingtv = 'Yes'
+		THEN 'Streaming TV'
+		ELSE streamingtv
 		END,
 
 	streamingmovies =
 		CASE
-			WHEN streamingmovies = 'Yes'
-			THEN 'Streaming Movies'
-			ELSE streamingmovies
+		WHEN streamingmovies = 'Yes'
+		THEN 'Streaming Movies'
+		ELSE streamingmovies
 		END
 ;
 ```
+
+## Create View
+
+Create database views to organize the data, making it simple to analyze service categories and churn totals.
+
+Below are the SQL queries and results for each transformation step.
+```sql
+/* ================================================================================
+   STEP 4: CREATE VIEW
+   ================================================================================ */
+
+
+/* --------------------------------------------------------------------------------
+   4.1. Create View 'service_type' 
+   -------------------------------------------------------------------------------- */
+
+-- Create View 'service_type':
+-- - Reformats data to better display service categories and churn totals.
+-- - This is needed because the original data lists all services for a customer in a single row,
+--   which complicates visualizations.
+
+CREATE VIEW service_type AS
+SELECT 
+	customerid,
+	service
+FROM (
+	SELECT customerid, phoneservice AS service
+	FROM customer_churn
+	WHERE phoneservice LIKE 'Phone%'
+		
+	UNION ALL
+	
+	SELECT customerid, multiplelines AS service
+	FROM customer_churn
+	WHERE multiplelines LIKE 'Multiple%'
+	
+	UNION ALL
+	
+	SELECT customerid, internetservice AS service
+	FROM customer_churn
+	WHERE internetservice LIKE 'Internet%'
+	
+	UNION ALL
+	
+	SELECT customerid, onlinesecurity AS service
+	FROM customer_churn 
+	WHERE onlinesecurity LIKE '%Security'
+	
+	UNION ALL
+	
+	SELECT customerid, onlinebackup AS service
+	FROM customer_churn
+	WHERE onlinebackup LIKE '%Backup'
+	
+	UNION ALL
+	
+	SELECT customerid, deviceprotection AS service
+	FROM customer_churn
+	WHERE deviceprotection LIKE 'Device%'
+	
+	UNION ALL
+	
+	SELECT customerid, techsupport AS service
+	FROM customer_churn
+	WHERE techsupport LIKE 'tech%'
+	
+	UNION ALL
+	
+	SELECT customerid, streamingtv AS service
+	FROM customer_churn
+	WHERE streamingtv LIKE '%TV'
+	
+	UNION ALL
+	
+	SELECT customerid, streamingmovies AS service
+	FROM customer_churn
+	WHERE streamingmovies LIKE '%Movies')
+GROUP BY
+	customerid,
+	service
+ORDER BY
+	customerid
+;
+
+
+/* --------------------------------------------------------------------------------
+   4.2. Create View 'bundle_type' 
+   -------------------------------------------------------------------------------- */
+
+-- Create View 'bundle_type':
+-- - Prepares for future optimizations (e.g., bundling products for PhoneNow.inc) to offer customers interesting choices.
+
+CREATE VIEW bundle_services AS
+SELECT 
+	customerid,
+	STRING_AGG(service, ', ' ORDER BY service_order) AS services
+FROM (
+	SELECT customerid, phoneservice AS service, 1 AS service_order
+	FROM customer_churn
+	WHERE phoneservice LIKE 'Phone%'
+		
+	UNION ALL
+	
+	SELECT customerid, multiplelines AS service, 2 AS service_order
+	FROM customer_churn
+	WHERE multiplelines LIKE 'Multiple%'
+	
+	UNION ALL
+	
+	SELECT customerid, internetservice AS service, 3 AS service_order
+	FROM customer_churn
+	WHERE internetservice LIKE 'Internet%'
+	
+	UNION ALL
+	
+	SELECT customerid, onlinesecurity AS service, 4 AS service_order
+	FROM customer_churn 
+	WHERE onlinesecurity LIKE '%Security'
+	
+	UNION ALL
+	
+	SELECT customerid, onlinebackup AS service , 5 AS service_order
+	FROM customer_churn
+	WHERE onlinebackup LIKE '%Backup'
+	
+	UNION ALL
+	
+	SELECT customerid, deviceprotection AS service, 6 AS service_order
+	FROM customer_churn
+	WHERE deviceprotection LIKE 'Device%'
+	
+	UNION ALL
+	
+	SELECT customerid, techsupport AS service, 7 AS service_order
+	FROM customer_churn
+	WHERE techsupport LIKE 'tech%'
+	
+	UNION ALL
+	
+	SELECT customerid, streamingtv AS service, 8 AS service_order
+	FROM customer_churn
+	WHERE streamingtv LIKE '%TV'
+	
+	UNION ALL
+	
+	SELECT customerid, streamingmovies AS service, 9 AS service_order
+	FROM customer_churn
+	WHERE streamingmovies LIKE '%Movies')
+GROUP BY
+	customerid
+ORDER BY
+	customerid
+;
