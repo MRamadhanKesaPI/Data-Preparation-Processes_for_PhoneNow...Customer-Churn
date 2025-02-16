@@ -425,3 +425,5 @@ ORDER BY
 	customerid
 ;
 ```
+---
+These queries will produce the final datasets that will be imported into Power BI to uncover insights.
