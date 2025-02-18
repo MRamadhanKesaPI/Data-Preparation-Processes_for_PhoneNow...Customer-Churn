@@ -3,19 +3,19 @@
 This process cleans and organizes raw data to make it ready for analysis. It involves importing data, fixing errors, and transforming it into a clear structure.
 
 Here are the steps I followed:
-1. [Data Import and Exploration](#data-import-and-exploration)
+1. [Data Import](#data-import)
 2. [Data Cleaning](#data-cleaning)
 3. [Data Transformation](#data-transformation)
 4. [Create View](#create-view)
 
-## Data Import and Exploration
+## Data Import
 
-Import the raw CSV data into the table and check for initial issues like formatting errors.
+The first step is to import the raw CSV data into the database. This ensures the data is loaded correctly and ready for the next steps, such as cleaning, transformation, and creating views.
 
 Below are the SQL queries and results for each Import and Inspection step.
 ```sql
 /* ================================================================================
-   STEP 1: DATA IMPORT AND INSPECTION
+   STEP 1: DATA IMPORT
    ================================================================================ */
 
 
@@ -71,7 +71,7 @@ CSV HEADER
 
 ## Data Cleaning
 
-Fix data errors by replacing empty values with proper numbers and removing any duplicates.
+After importing the data, the next step is to check for any missing values and duplicates. This helps ensure data integrity before moving on to transformation and analysis.
 
 Below are the SQL queries and results for each Cleaning step.
 ```sql
@@ -139,7 +139,7 @@ ORDER BY
 
 ## Data Transformation
 
-The data is transformed to enrich the dataset. Key steps include:
+In this step, the data is refined to improve consistency and usability. The transformations include updating and converting the data types for some of the columns.
 
 Below are the SQL queries and results for each transformation step.
 ```sql
@@ -274,7 +274,7 @@ SET
 
 ## Create View
 
-Create database views to organize the data, making it simple to analyze service categories and churn totals.
+To enhance data organization and support analytics, database views are created, making it simple to reporting and dashboard development by pre-aggregating relevant data.
 
 Below are the SQL queries and results for each transformation step.
 ```sql
