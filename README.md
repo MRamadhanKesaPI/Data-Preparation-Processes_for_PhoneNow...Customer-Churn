@@ -1,4 +1,4 @@
-# Data Preparation Process for PhoneNow: Customer Churn Analysis
+# Data Preparation Processes for PhoneNow: Customer Churn Analysis
 
 The data preparation process ensures raw data is clean, consistent, and ready for analysis. It involves importing the data, fixing errors, and organizing it into a usable structure. This step is crucial for accurate and reliable results.
 
