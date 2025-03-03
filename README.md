@@ -427,3 +427,6 @@ ORDER BY
 ```
 ---
 These queries will produce the final datasets that will be imported into Power BI to uncover insights.
+
+| [⏪ DAX on Power BI](https://mramadhankesapi.github.io/DAX-Processes__for__PhoneNow...Customer-Churn/) | [PhoneNow: Customer Churn Analytics ⏩](https://mramadhankesapi.github.io/PhoneNow-Customer-Churn-Analytics/) |
+|----------------------------------|---------------|
