@@ -431,10 +431,10 @@ These queries will produce the final datasets that will be imported into Power B
 <table style="width:100%; border-collapse: collapse; text-align: center;">
   <tr>
     <td style="width:50%; padding:10px; text-align: left;">
-      ⬅️ <a href="https://mramadhankesapi.github.io/DAX-Processes__for__PhoneNow...Customer-Churn/" style="text-decoration: none; font-weight: bold; color: #007bff;">DAX on Power BI</a>
+      ⏪ <a href="https://mramadhankesapi.github.io/DAX-Processes__for__PhoneNow...Customer-Churn/" style="text-decoration: none; font-weight: bold; color: #007bff;">DAX on Power BI</a>
     </td>
     <td style="width:50%; padding:10px; text-align: right;">
-      <a href="https://mramadhankesapi.github.io/PhoneNow-Customer-Churn-Analytics/" style="text-decoration: none; font-weight: bold; color: #007bff;">📊 PhoneNow: Customer Churn Analytics</a> ➡️
+      <a href="https://mramadhankesapi.github.io/PhoneNow-Customer-Churn-Analytics/" style="text-decoration: none; font-weight: bold; color: #007bff;">📊 PhoneNow: Customer Churn Analytics</a> ⏩
     </td>
   </tr>
 </table>
