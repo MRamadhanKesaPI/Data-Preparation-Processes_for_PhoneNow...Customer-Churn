@@ -296,61 +296,27 @@ CREATE VIEW service_type AS
 SELECT 
 	customerid,
 	service
-FROM (
-	SELECT customerid, phoneservice AS service
-	FROM customer_churn
-	WHERE phoneservice LIKE 'Phone%'
-		
+FROM 
+	customer_churn
+CROSS JOIN LATERAL(
+	SELECT phoneservice AS service WHERE phoneservice LIKE 'Phone%'
 	UNION ALL
-	
-	SELECT customerid, multiplelines AS service
-	FROM customer_churn
-	WHERE multiplelines LIKE 'Multiple%'
-	
+	SELECT multiplelines WHERE multiplelines LIKE 'Multiple%'
 	UNION ALL
-	
-	SELECT customerid, internetservice AS service
-	FROM customer_churn
-	WHERE internetservice LIKE 'Internet%'
-	
+	SELECT internetservice WHERE internetservice LIKE '%Internet%'
+	UNION ALL 
+	SELECT onlinesecurity WHERE onlinesecurity LIKE '%Security'
 	UNION ALL
-	
-	SELECT customerid, onlinesecurity AS service
-	FROM customer_churn 
-	WHERE onlinesecurity LIKE '%Security'
-	
+	SELECT onlinebackup WHERE onlinebackup LIKE '%Backup'
 	UNION ALL
-	
-	SELECT customerid, onlinebackup AS service
-	FROM customer_churn
-	WHERE onlinebackup LIKE '%Backup'
-	
+	SELECT deviceprotection WHERE deviceprotection LIKE 'Device%'
 	UNION ALL
-	
-	SELECT customerid, deviceprotection AS service
-	FROM customer_churn
-	WHERE deviceprotection LIKE 'Device%'
-	
+	SELECT techsupport WHERE techsupport LIKE 'Tech%'
 	UNION ALL
-	
-	SELECT customerid, techsupport AS service
-	FROM customer_churn
-	WHERE techsupport LIKE 'tech%'
-	
+	SELECT streamingtv WHERE streamingtv LIKE '%TV'
 	UNION ALL
-	
-	SELECT customerid, streamingtv AS service
-	FROM customer_churn
-	WHERE streamingtv LIKE '%TV'
-	
-	UNION ALL
-	
-	SELECT customerid, streamingmovies AS service
-	FROM customer_churn
-	WHERE streamingmovies LIKE '%Movies')
-GROUP BY
-	customerid,
-	service
+	SELECT streamingmovies WHERE streamingmovies LIKE '%Movies'
+)
 ORDER BY
 	customerid
 ;
@@ -365,63 +331,32 @@ ORDER BY
 
 CREATE VIEW bundle_services AS
 SELECT 
-	customerid,
-	STRING_AGG(service, ', ' ORDER BY service_order) AS services
-FROM (
-	SELECT customerid, phoneservice AS service, 1 AS service_order
-	FROM customer_churn
-	WHERE phoneservice LIKE 'Phone%'
-		
-	UNION ALL
-	
-	SELECT customerid, multiplelines AS service, 2 AS service_order
-	FROM customer_churn
-	WHERE multiplelines LIKE 'Multiple%'
-	
-	UNION ALL
-	
-	SELECT customerid, internetservice AS service, 3 AS service_order
-	FROM customer_churn
-	WHERE internetservice LIKE 'Internet%'
-	
-	UNION ALL
-	
-	SELECT customerid, onlinesecurity AS service, 4 AS service_order
-	FROM customer_churn 
-	WHERE onlinesecurity LIKE '%Security'
-	
-	UNION ALL
-	
-	SELECT customerid, onlinebackup AS service , 5 AS service_order
-	FROM customer_churn
-	WHERE onlinebackup LIKE '%Backup'
-	
-	UNION ALL
-	
-	SELECT customerid, deviceprotection AS service, 6 AS service_order
-	FROM customer_churn
-	WHERE deviceprotection LIKE 'Device%'
-	
-	UNION ALL
-	
-	SELECT customerid, techsupport AS service, 7 AS service_order
-	FROM customer_churn
-	WHERE techsupport LIKE 'tech%'
-	
-	UNION ALL
-	
-	SELECT customerid, streamingtv AS service, 8 AS service_order
-	FROM customer_churn
-	WHERE streamingtv LIKE '%TV'
-	
-	UNION ALL
-	
-	SELECT customerid, streamingmovies AS service, 9 AS service_order
-	FROM customer_churn
-	WHERE streamingmovies LIKE '%Movies')
-GROUP BY
+    	customerid,
+    	STRING_AGG(service, ', ' ORDER BY service_order) AS services
+FROM 
+	customer_churn
+CROSS JOIN LATERAL(
+    	SELECT phoneservice AS service, 1 AS service_order WHERE phoneservice LIKE 'Phone%'
+    	UNION ALL
+    	SELECT multiplelines, 2 WHERE multiplelines LIKE 'Multiple%'
+    	UNION ALL
+    	SELECT internetservice, 3 WHERE internetservice LIKE 'Internet%'
+    	UNION ALL
+    	SELECT onlinesecurity, 4 WHERE onlinesecurity LIKE '%Security'
+    	UNION ALL
+    	SELECT onlinebackup, 5 WHERE onlinebackup LIKE '%Backup'
+    	UNION ALL
+    	SELECT deviceprotection, 6 WHERE deviceprotection LIKE 'Device%'
+    	UNION ALL
+    	SELECT techsupport, 7 WHERE techsupport LIKE 'tech%'
+    	UNION ALL
+    	SELECT streamingtv, 8 WHERE streamingtv LIKE '%TV'
+    	UNION ALL
+    	SELECT streamingmovies, 9 WHERE streamingmovies LIKE '%Movies'
+) 
+GROUP BY 
 	customerid
-ORDER BY
+ORDER BY 
 	customerid
 ;
 ```
